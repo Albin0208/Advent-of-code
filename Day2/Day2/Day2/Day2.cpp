@@ -43,21 +43,15 @@ int main()
 					color == "blue" && num > blue_num)
 				{
 					impossible = true;
-					//break;
+					//break; // Efficiency for part 1
 				}
 
 				if (color == "red" && num > max_red)
-				{
 					max_red = num;
-				}
 				else if (color == "green" && num > max_green)
-				{
 					max_green = num;
-				}
 				else if (color == "blue" && num > max_blue)
-				{
 					max_blue = num;
-				}
 			}
 		}
 
