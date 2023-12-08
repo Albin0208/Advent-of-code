@@ -4,6 +4,17 @@
 #include <sstream>
 #include <unordered_map>
 
+enum Type
+{
+	HighCard,
+	OnePair,
+	TwoPairs,
+	ThreeOfAKind,
+	FullHouse,
+	FourOfAKind,
+	FiveOfAKind,
+};
+
 std::unordered_map<char, int> count_suit(std::string const& first)
 {
 	std::unordered_map<char, int> suit_count;
@@ -16,34 +27,48 @@ std::unordered_map<char, int> count_suit(std::string const& first)
 
 int get_hand(std::string const& first)
 {
-	std::unordered_map<char, int> suit_count{ count_suit(first) };
+	auto suit_count{ count_suit(first) };
 
 	std::unordered_map<int, int> count_count;
 
 	for (auto const& [suit, count] : suit_count)
 	{
+		if (suit == 'J')
+			continue;
+
 		count_count[count]++;
 	}
 
-	if (count_count[5] == 1)
-		return 7;
+	switch(suit_count['J'])
+	{
+		case 0:
+			if (count_count[5] == 1) return Type::FiveOfAKind;
+			if (count_count[4] == 1) return Type::FourOfAKind;
+			if (count_count[3] == 1 && count_count[2] == 1) return Type::FullHouse;
+			if (count_count[3] == 1) return Type::ThreeOfAKind;
+			if (count_count[2] == 2) return Type::TwoPairs;
+			if (count_count[2] == 1) return Type::OnePair;
+			return Type::HighCard;
+		case 1:
+			if (count_count[4] == 1) return Type::FiveOfAKind;
+			if (count_count[3] == 1) return Type::FourOfAKind;
+			if (count_count[2] == 2) return Type::FullHouse;
+			if (count_count[2] == 1) return Type::ThreeOfAKind;
+			return Type::OnePair;
+		case 2:
+			if (count_count[3] == 1) return Type::FiveOfAKind;
+			if (count_count[2] == 1) return Type::FourOfAKind;
 
-	if (count_count[4] == 1)
-		return 6;
+			return Type::ThreeOfAKind;
+		case 3:
+			if (count_count[2] == 1) return Type::FiveOfAKind;
+			return Type::FourOfAKind;
+		case 4:
+		case 5:
+			return Type::FiveOfAKind;
+	}
 
-	if (count_count[3] == 1 && count_count[2] == 1)
-		return 5;
-
-	if (count_count[3] == 1)
-		return 4;
-
-	if (count_count[2] == 2)
-		return 3;
-
-	if (count_count[2] == 1)
-		return 2;
-
-	return 1;
+	return Type::HighCard;
 }
 
 int main()
@@ -57,7 +82,7 @@ int main()
 		{"A", 14},
 		{"K", 13},
 		{"Q", 12},
-		{"J", 11},
+		{"J", 1},
 		{"T", 10}
 	};
 
