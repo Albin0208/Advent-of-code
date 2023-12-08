@@ -115,11 +115,8 @@ int main()
 				if (a == b)
 					continue;
 
-				auto search = map.find(a);
-				int l = search != map.end() ? search->second : std::stoi(a);
-
-				search = map.find(b);
-				int r = search != map.end() ? search->second : std::stoi(b);
+				int l = map.contains({ a }) ? map.at(a) : std::stoi(a);
+				int r = map.contains({ b }) ? map.at(b) : std::stoi(b);
 
 				return l < r;
 			}
